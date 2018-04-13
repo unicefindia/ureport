@@ -372,7 +372,6 @@
           - block navigation
             %nav#ureport-public-navbar-collapse.collapse.navbar-collapse.navbar-right.public-nav{role:"navigation"}
               %ul.nav.navbar-nav.public-nav-ul
-                - load_qbs request.org 'additional_menu'
                 - for d_block in additional_menu|slice:":1"
                   %li.level1{ class:"{% active request 'added'%}"}
                     %a.primary-color{href:"{% url 'public.added' %}"}
@@ -420,6 +419,19 @@
                 -#    %li
                 -#      %a.primary-color{ href:"#"}
                 -#        Francais
+
+                - if org_parents
+                  %li.level1.dropdown
+                    %a.primary-color.dropdown-toggle{type:"button", data-toggle:"dropdown"}
+                      - trans "Orgs"
+                      %span.caret
+
+                    %ul.dropdown-menu{ role:"menu"}
+                      - for org in org_parents
+                        %li
+                          %a.primary-bg-color.primary-color{ href:"{{ org.build_host_link }}"}
+                            {{ org.name }}
+                        %li.divider.primary-bg-color
 
   #hero.jumbotron
     - block hero
