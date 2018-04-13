@@ -372,6 +372,7 @@
           - block navigation
             %nav#ureport-public-navbar-collapse.collapse.navbar-collapse.navbar-right.public-nav{role:"navigation"}
               %ul.nav.navbar-nav.public-nav-ul
+                - load_qbs request.org 'additional_menu'
                 - for d_block in additional_menu|slice:":1"
                   %li.level1{ class:"{% active request 'added'%}"}
                     %a.primary-color{href:"{% url 'public.added' %}"}
