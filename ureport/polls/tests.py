@@ -320,6 +320,29 @@ class PollTest(UreportTest):
 
         self.assertFalse(Poll.get_public_polls(self.uganda))
 
+    def test_get_parents_polls(self):
+        org_state = self.create_org('org_state', pytz.timezone('Africa/Bujumbura'), self.admin)
+        org_state.country = self.uganda
+        org_state.save()
+
+        poll1 = self.create_poll(org_state, "Poll State 1", "uuid-3", self.education_nigeria, self.admin, has_synced=True)
+
+        orgs = self.uganda.__class__.objects.filter(country=self.uganda)
+        self.assertTrue(Poll.get_parent_polls(org=self.uganda, children=orgs))
+        self.assertTrue(poll1 in Poll.get_parent_polls(org=self.uganda, children=orgs))
+
+        org_district = self.create_org('org_district', pytz.timezone('Africa/Bujumbura'), self.admin)
+        org_district.state = org_state
+        org_district.save()
+
+        poll2 = self.create_poll(org_district, "Poll District 1", "uuid-4", self.education_nigeria, self.admin, has_synced=True)
+        orgs = self.uganda.__class__.objects.filter(state=org_state)
+
+        self.assertTrue(Poll.get_parent_polls(org=org_state, children=orgs))
+        self.assertTrue(poll2 in Poll.get_parent_polls(org=org_state, children=orgs))
+
+        self.assertTrue(Poll.get_public_polls(org=org_district))
+
     def test_poll_get_main_poll(self):
         self.assertIsNone(Poll.get_main_poll(self.uganda))
         self.assertIsNone(Poll.get_main_poll(self.nigeria))
