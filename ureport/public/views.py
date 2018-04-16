@@ -152,9 +152,20 @@ class PollContextMixin(object):
 
         main_poll = self.derive_main_poll()
         context['latest_poll'] = main_poll
-
         context['categories'] = Category.objects.filter(org=org, is_active=True).order_by('name')
-        context['polls'] = Poll.get_public_polls(org=org).order_by('-poll_date')
+
+        if org.is_district:
+            context['polls'] = Poll.get_public_polls(org=org).order_by('-poll_date')
+        else:
+            object_org = org.__class__.objects
+
+            if org.is_country:
+                orgs = object_org.filter(country=org)
+
+            if org.is_state:
+                orgs = object_org.filter(state=org)
+
+            context['polls'] = Poll.get_parent_polls(org=org, children=orgs).order_by('-poll_date')
 
         context['related_stories'] = []
         if main_poll:
