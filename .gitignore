@@ -1,3 +1,5 @@
+.env
+.vscode
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -68,7 +70,7 @@ docs/_build/
 dash.sqlite
 
 # never check in the settings file/link
-ureport/settings.py
+# ureport/settings.py
 
 # ignore sitestatic directory
 sitestatic/
