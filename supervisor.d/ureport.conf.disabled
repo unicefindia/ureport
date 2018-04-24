@@ -1,4 +1,4 @@
-[program:rapidpro]
+[program:ureport]
 command=/usr/local/bin/gunicorn ureport.wsgi -c %(here)s/gunicorn.conf.py
 directory=%(here)s
 process_name=%(program_name)s
