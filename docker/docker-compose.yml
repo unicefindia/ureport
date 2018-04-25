@@ -1,0 +1,83 @@
+version: "3.3"
+
+services:
+  ureport_base:
+    image: dr1:5000/ureport:base
+    build:
+      context: ..
+      dockerfile: docker/ureport_base.Dockerfile
+
+  ureport:
+    image: dr1:5000/ureport:latest
+    build:
+      context: ..
+      dockerfile: docker/ureport.Dockerfile
+    ports:
+      - "8000:8000"
+    links:
+      - ureport_database
+      - ureport_redis
+      - ureport_celery
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgis://ureport:ureport@ureport_database/ureport}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DEBUG=${DEBUG}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+      - EMAIL_ALIAS=${EMAIL_ALIAS}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME}
+      - AWS_S3_SECURE_URLS=${AWS_S3_SECURE_URLS}
+      - DEFAULT_FILE_STORAGE=${DEFAULT_FILE_STORAGE}
+      - REDIS_HOST=${REDIS_HOST:-ureport_redis}
+      - SITE_API_HOST=${SITE_API_HOST}
+      - API_ENDPOINT=${API_ENDPOINT}
+      - HOSTNAME=${HOSTNAME}
+      - EMPTY_SUBDOMAIN_HOST=${EMPTY_SUBDOMAIN_HOST}
+      - SESSION_COOKIE_DOMAIN=${SESSION_COOKIE_DOMAIN}
+
+  ureport_database:
+    image: mdillon/postgis:9.6-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-ureport}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-ureport}
+      - POSTGRES_DB=${POSTGRES_DB:-ureport}
+    volumes:
+      - ureport_database:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  ureport_redis:
+    image: redis:alpine
+    restart: always
+
+  ureport_celery:
+    restart: unless-stopped
+    image: dr1:5000/ureport:celery
+    build:
+      context: ..
+      dockerfile: docker/celery.Dockerfile
+    links:
+      - ureport_database
+      - ureport_redis
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgis://ureport:ureport@ureport_database/ureport}
+      - REDIS_HOST=${REDIS_HOST:-ureport_redis}
+
+  ureport_pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    links:
+      - ureport_database
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=dba@ureport.unicef.in
+      - PGADMIN_DEFAULT_PASSWORD=SuperSecret
+
+volumes:
+  ureport_database:

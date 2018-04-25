@@ -7,6 +7,8 @@ import pytz
 from datetime import timedelta
 from django.contrib.auth.models import User
 from django.db import models, connection
+from django.db.models.query_utils import Q
+
 from django.db.models import Sum, Count
 from django.utils.text import slugify
 from django.utils import timezone
@@ -299,6 +301,10 @@ class Poll(SmartModel):
     @classmethod
     def get_public_polls(cls, org):
         return Poll.objects.filter(org=org, is_active=True, category__is_active=True, has_synced=True)
+
+    @classmethod
+    def get_parent_polls(cls, org, children):
+        return Poll.objects.filter((Q(org=org) | Q(org__in=children)), is_active=True, category__is_active=True, has_synced=True).order_by('-poll_date')
 
     @classmethod
     def get_main_poll(cls, org):
