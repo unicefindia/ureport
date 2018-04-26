@@ -1,0 +1,3 @@
+-r pip-requires.txt
+python-decouple
+whitenoise

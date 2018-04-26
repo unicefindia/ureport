@@ -87,3 +87,18 @@ def set_story_widget_url(request):
     story_widget_url = getattr(settings, 'STORY_WIDGET_URL', None)
     story_widget_url = "%s/" % story_widget_url if story_widget_url and not story_widget_url.endswith('/') else story_widget_url
     return dict(story_widget_url=story_widget_url)
+
+
+def set_org_parents(request):
+    orgs = {}
+    if request.org:
+        object_org = request.org.__class__.objects
+        org = object_org.get(id=request.org.id)
+
+        if request.org.is_country:
+            orgs = request.org.__class__.objects.filter(country=org)
+
+        if request.org.is_state:
+            orgs = request.org.__class__.objects.filter(state=org)
+
+    return dict(org_parents=orgs)

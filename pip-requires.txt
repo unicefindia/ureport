@@ -1,6 +1,6 @@
 smartmin
 Django<2.0
-rapidpro-dash
+git+https://github.com/edudouglas/dash.git
 celery
 coverage
 django-compressor

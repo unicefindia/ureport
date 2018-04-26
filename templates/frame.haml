@@ -421,6 +421,19 @@
                 -#      %a.primary-color{ href:"#"}
                 -#        Francais
 
+                - if org_parents
+                  %li.level1.dropdown
+                    %a.primary-color.dropdown-toggle{type:"button", data-toggle:"dropdown"}
+                      - trans "Orgs"
+                      %span.caret
+
+                    %ul.dropdown-menu{ role:"menu"}
+                      - for org in org_parents
+                        %li
+                          %a.primary-bg-color.primary-color{ href:"{{ org.build_host_link }}"}
+                            {{ org.name }}
+                        %li.divider.primary-bg-color
+
   #hero.jumbotron
     - block hero
 
