@@ -27,6 +27,19 @@ GEOS_LIBRARY_PATH = config('GEOS_LIBRARY_PATH', default='/usr/lib/libgeos_c.so.1
 DEBUG_TOOLBAR = config('DEBUG_TOOLBAR', default=False, cast=bool)
 DEBUG = config('DEBUG', default=False, cast=bool)
 
+# MIDDLEWARE =
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'dash.orgs.middleware.SetOrgMiddleware',
+)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Available languages for translation
 LANGUAGES = (('en', "English"), ('fr', "French"), ('es', "Spanish"), ('ar', "Arabic"),
              ('uk', "Ukrainian"), ('pt-br', 'Portuguese'), ('th', "Thai"), ('ro', "Romanian"))
