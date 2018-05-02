@@ -27,8 +27,7 @@ GEOS_LIBRARY_PATH = config('GEOS_LIBRARY_PATH', default='/usr/lib/libgeos_c.so.1
 DEBUG_TOOLBAR = config('DEBUG_TOOLBAR', default=False, cast=bool)
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-# MIDDLEWARE =
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
